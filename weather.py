@@ -1,5 +1,6 @@
 ### WEATHER ###
-"""V0.5: Introduce API"""
+"""V0.5.1: Introduce API -> small tweaks"""
+
 
 import requests, json
 import tkinter as tk
@@ -16,15 +17,17 @@ import tkinter as tk
 # API Key
 api_key = '3294a33bb60c1fa031b89f141c8bfd74'
 
-# URL to API-store ---> 'COMPLETE url' REQUIRES USER INPUT (and other variables)
+# URL to API-store ---> "COMPLETE URL", (full_url), REQUIRES USER INPUT (and other variables)
 base_url = 'http://api.openweathermap.org/data/2.5/weather?'
 
-city = "Florence"
+city = "Florence"   # Placeholder: will be replaced with user input, possibly through 'Geocoding API'
 
-full_url = base_url + 'appid=' + api_key + '&q=' + city
+# Complete URL
+full_url = base_url + 'appid=' + api_key + '&q=' + city + '&units=metric'
+'''Default temperature measurements are in Kelvin.'''
 
 print(full_url)
-'''http://api.openweathermap.org/data/2.5/weather?appid=3294a33bb60c1fa031b89f141c8bfd74&q=Florence'''
+'''Example: http://api.openweathermap.org/data/2.5/weather?appid=3294a33bb60c1fa031b89f141c8bfd74&q=Florence&units=metric'''
 print()
 response = requests.get(full_url)
 
@@ -32,39 +35,48 @@ x = response.json()
 
 if x["cod"] != "404":
 
-    # store the value of "main"
-    # key in variable y
+    # store the value of "main" key in variable y
     y = x["main"]
 
-    # store the value corresponding
-    # to the "temp" key of y
+    # store the value corresponding to the "temp" key of y
     current_temperature = y["temp"]
 
-    # store the value corresponding
-    # to the "pressure" key of y
+    # store the value corresponding to the "feels_like" key of y
+    current_feels_like = y["feels_like"]
+
+    # store the value corresponding to the "pressure" key of y
     current_pressure = y["pressure"]
 
-    # store the value corresponding
-    # to the "humidity" key of y
+    # store the value corresponding to the "humidity" key of y
     current_humidity = y["humidity"]
 
-    # store the value of "weather"
-    # key in variable z
+    # store the value of "weather" key in variable z
     z = x["weather"]
 
-    # store the value corresponding
-    # to the "description" key at
-    # the 0th index of z
+    # store the value corresponding to the "description" key at the 0th index of z
     weather_description = z[0]["description"]
 
+    # store the value of "wind" key in variable w
+    w = x["wind"]
+
+    # store the value corresponding to the "speed" key of w
+    current_speed = w["speed"]
+
+    # translate "current_speed" from m/s to km/h
+    kmh_speed = current_speed * 3.6
+
     # print following values
-    print(" Temperature (in kelvin unit) = " +
+    print(" Temperature (in Celsius unit) = " +
           str(current_temperature) +
-          "\n atmospheric pressure (in hPa unit) = " +
+          "\n |-> feels like (in Celsius unit) = " +
+          str(current_feels_like) +
+          "\n Wind speed (in km/h) = " +
+          str(kmh_speed) +
+          "\n Atmospheric pressure (in hPa unit) = " +
           str(current_pressure) +
-          "\n humidity (in percentage) = " +
+          "\n Humidity (in percentage) = " +
           str(current_humidity) +
-          "\n description = " +
+          "\n Description = " +
           str(weather_description))
 
 else:
@@ -73,6 +85,10 @@ else:
 
 # Geocoding
 base_url_geo = 'http://api.openweathermap.org/geo/1.0/direct?'
+geo_url = base_url_geo + 'appid=' + api_key + '&q=' + city + '&limit=1'
+
+coordinates = requests.get(geo_url)
+g = coordinates.json()
 
 """END OF TEMPORARY PLACEMENT"""
 
@@ -86,7 +102,7 @@ class Weather:
     def make_widgets(self):
         """Add functionality to tKinter window."""
         # Title/Output --- TEST
-        self.output = tk.Label(self.root, text="")
+        self.output = tk.Label(self.root, text="TITLE-TEST")
         self.output.pack()
 
         # Input
@@ -109,6 +125,8 @@ class Weather:
             self.output.config(text="Cold.")
         else:
             self.output.config(text="It's cold in Alaska.")
+
+    '''def call_API(self):'''
 
 
 root = tk.Tk()
