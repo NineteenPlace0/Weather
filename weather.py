@@ -1,5 +1,5 @@
 ### WEATHER ###
-"""V0.5.2: Introduce API -> Moved to Function"""
+"""V0.6: Store Data -> Write"""
 
 
 import requests, json
@@ -31,7 +31,7 @@ class Weather:
         self.root.bind('<Return>', lambda event=None: self.call_api())
 
         # Output
-        self.output = tk.Label(self.root, text="TITLE-TEST")
+        self.output = tk.Label(self.root, text="")
         self.output.pack()
 
     def check_location(self):
@@ -94,19 +94,25 @@ class Weather:
             # translate "current_speed" from m/s to km/h
             kmh_speed = current_speed * 3.6
 
-            # print following values
-            self.output.config(text=" Temperature (in Celsius unit) = " +
-                                    str(current_temperature) +
-                                    "\n |-> feels like (in Celsius unit) = " +
-                                    str(current_feels_like) +
-                                    "\n Wind speed (in km/h) = " +
-                                    str(kmh_speed) +
-                                    "\n Atmospheric pressure (in hPa unit) = " +
-                                    str(current_pressure) +
-                                    "\n Humidity (in percentage) = " +
-                                    str(current_humidity) +
-                                    "\n Description = " +
-                                    str(weather_description))
+            txt = str(" Temperature (in Celsius unit) = " +
+                      str(current_temperature) +
+                      "\n |-> feels like (in Celsius unit) = " +
+                      str(current_feels_like) +
+                      "\n Wind speed (in km/h) = " +
+                      str(kmh_speed) +
+                      "\n Atmospheric pressure (in hPa unit) = " +
+                      str(current_pressure) +
+                      "\n Humidity (in percentage) = " +
+                      str(current_humidity) +
+                      "\n Description = " +
+                      str(weather_description))
+
+            # Return to 'Output'
+            self.output.config(text=txt)
+
+            # Store data
+            f = open('weather.txt', 'w')
+            f.write(txt)
 
         else:
             self.output.config(text=" City Not Found ")
