@@ -1,5 +1,5 @@
 ### WEATHER ###
-"""V0.6: Store Data -> Write"""
+"""V0.6.1: Store Data -> Read"""
 
 
 import requests, json
@@ -102,7 +102,7 @@ class Weather:
                       "\n Description = " +
                       str(weather_description))
 
-            # Return to 'Output'
+            # Return to 'Output' / Display results
             self.output.config(text=txt)
 
             # Store data
@@ -111,6 +111,10 @@ class Weather:
 
         else:
             self.output.config(text=" City Not Found ")
+
+    def word(self):
+        """https://www.tutorialspoint.com/how-do-i-create-a-popup-window-in-tkinter"""
+
 
 
 root = tk.Tk()
