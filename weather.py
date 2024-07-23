@@ -34,15 +34,6 @@ class Weather:
         self.output = tk.Label(self.root, text="")
         self.output.pack()
 
-    def check_location(self):
-        """Check input value."""
-        loc = self.location.get()
-
-        if loc == "Alaska":
-            self.output.config(text="Cold.")
-        else:
-            self.output.config(text="It's cold in Alaska.")
-
     def call_api(self):
         """Call API."""
         # API Key
@@ -52,6 +43,10 @@ class Weather:
         base_url = 'http://api.openweathermap.org/data/2.5/weather?'
 
         city = self.location.get()
+
+        while len(city) < 3:
+            # If the variable stored in 'city' contains less than 3 characters ('no','hi'), results in "KEY ERROR: 'main'"
+            city = " " + city
 
         # Complete URL
         full_url = base_url + 'appid=' + api_key + '&q=' + city + '&units=metric'
