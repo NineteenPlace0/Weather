@@ -1,6 +1,6 @@
- Temperature (in Celsius unit) = 19.87
- |-> feels like (in Celsius unit) = 19.61
- Wind speed (in km/h) = 20.376
+ Temperature (in Celsius unit) = 22.86
+ |-> feels like (in Celsius unit) = 22.79
+ Wind speed (in km/h) = 16.668
  Atmospheric pressure (in hPa unit) = 1017
- Humidity (in percentage) = 65
- Description = few clouds
+ Humidity (in percentage) = 61
+ Description = scattered clouds

@@ -1,9 +1,11 @@
 ### WEATHER ###
-"""V0.6.1: Store Data -> Read"""
+"""V0.6.2: Store Data -> Write"""
 
 
-import requests, json
+import requests, json, datetime
 import tkinter as tk
+from tkinter import messagebox
+from docx import Document
 
 
 class Weather:
@@ -11,6 +13,10 @@ class Weather:
         self.root = root
         self.root.title = "Weather"
         self.make_widgets()
+        self.data = ""
+
+        #test
+        self.date_time()
 
     def make_widgets(self):
         """Add functionality to tKinter window."""
@@ -33,6 +39,10 @@ class Weather:
         # Output
         self.output = tk.Label(self.root, text="")
         self.output.pack()
+
+        # Save output
+        self.save = tk.Button(self.root, text="Save?", command=self.store_word)
+        self.save.pack()
 
     def call_api(self):
         """Call API."""
@@ -104,6 +114,7 @@ class Weather:
 
             # Return to 'Output' / Display results
             self.output.config(text=txt)
+            self.data = txt
 
             # Store data
             f = open('weather.txt', 'w')
@@ -112,9 +123,19 @@ class Weather:
         else:
             self.output.config(text=" City Not Found ")
 
-    def word(self):
-        """https://www.tutorialspoint.com/how-do-i-create-a-popup-window-in-tkinter"""
+    def store_word(self):
+        """Store retrieved data in 'Word-document' (.docx)."""
 
+        word = messagebox.askyesno("Store data?", "Store data in '.docx'-file?")
+        if word:
+            doc = Document()
+            doc.add_paragraph(text=self.data)
+            doc.save('placeholder.docx')
+
+    def date_time(self):
+        dtnow = datetime.datetime.now()
+        dt = dtnow.strftime('%Y/%m/%d_%H:%M:%S')
+        print(dt)
 
 
 root = tk.Tk()
