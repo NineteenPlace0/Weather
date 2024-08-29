@@ -1,10 +1,12 @@
 ### WEATHER ###
-"""V0.6.2: Store Data -> Write"""
+"""V0.6.3: Store Data -> datetime"""
 
 
-import requests, json, datetime
 import tkinter as tk
 from tkinter import messagebox
+
+import datetime
+import requests
 from docx import Document
 
 
@@ -13,19 +15,14 @@ class Weather:
         self.root = root
         self.root.title = "Weather"
         self.make_widgets()
-        self.data = ""
-
-        #test
-        self.date_time()
 
     def make_widgets(self):
         """Add functionality to tKinter window."""
         # Title
-        self.title = tk.Label(self.root, text="TITLE-TEST")
+        self.title = tk.Label(self.root, text="What's the weather like in...?")
         self.title.pack()
 
         # Input
-        tk.Label(self.root, text="What's the weather like in...?")
         self.location = tk.Entry(self.root)
         self.location.pack()
 
@@ -37,7 +34,9 @@ class Weather:
         self.root.bind('<Return>', lambda event=None: self.call_api())
 
         # Output
-        self.output = tk.Label(self.root, text="")
+        self.output_title = tk.Label(self.root, text="")
+        self.output_title.pack()
+        self.output = tk.Label(self.root, text="", justify="left")
         self.output.pack()
 
         # Save output
@@ -46,20 +45,21 @@ class Weather:
 
     def call_api(self):
         """Call API."""
+        self.date_time()
         # API Key
         api_key = '3294a33bb60c1fa031b89f141c8bfd74'
 
         # URL to API-store ---> "COMPLETE URL", (full_url), REQUIRES USER INPUT (and other variables)
         base_url = 'http://api.openweathermap.org/data/2.5/weather?'
 
-        city = self.location.get()
+        self.city = self.location.get()
 
-        while len(city) < 3:
+        while len(self.city) < 3:
             # If the variable stored in 'city' contains less than 3 characters ('no','hi'), results in "KEY ERROR: 'main'"
-            city = " " + city
+            self.city = " " + self.city
 
         # Complete URL
-        full_url = base_url + 'appid=' + api_key + '&q=' + city + '&units=metric'
+        full_url = base_url + 'appid=' + api_key + '&q=' + self.city + '&units=metric'
         '''Default temperature measurements are in Kelvin.'''
 
         print()
@@ -69,37 +69,32 @@ class Weather:
 
         if x["cod"] != "404":
 
-            # store the value of "main" key in variable y
+            # Store the value of "main" key in variable y
             y = x["main"]
 
-            # store the value corresponding to the "temp" key of y
+            # Store values to corresponding keys of y
             current_temperature = y["temp"]
-
-            # store the value corresponding to the "feels_like" key of y
             current_feels_like = y["feels_like"]
-
-            # store the value corresponding to the "pressure" key of y
             current_pressure = y["pressure"]
-
-            # store the value corresponding to the "humidity" key of y
             current_humidity = y["humidity"]
 
-            # store the value of "weather" key in variable z
+            # Store the value of "weather" key in variable z
             z = x["weather"]
 
-            # store the value corresponding to the "description" key at the 0th index of z
+            # Store the value corresponding to the "description" key at the 0th index of z
             weather_description = z[0]["description"]
 
-            # store the value of "wind" key in variable w
+            # Store the value of "wind" key in variable w
             w = x["wind"]
 
-            # store the value corresponding to the "speed" key of w
+            # Store the value corresponding to the "speed" key of w
             current_speed = w["speed"]
 
-            # translate "current_speed" from m/s to km/h
+            # Translate "current_speed" from m/s to km/h
             kmh_speed = current_speed * 3.6
 
-            txt = str(" Temperature (in Celsius unit) = " +
+            title = str(self.city.title() + "\n" + self.dt)
+            txt = str("\n Temperature (in Celsius unit) = " +
                       str(current_temperature) +
                       "\n |-> feels like (in Celsius unit) = " +
                       str(current_feels_like) +
@@ -113,32 +108,38 @@ class Weather:
                       str(weather_description))
 
             # Return to 'Output' / Display results
+            self.output_title.config(text=title)
             self.output.config(text=txt)
-            self.data = txt
+            self.data = title + txt
 
             # Store data
             f = open('weather.txt', 'w')
-            f.write(txt)
+            f.write(self.data)
 
         else:
             self.output.config(text=" City Not Found ")
 
     def store_word(self):
         """Store retrieved data in 'Word-document' (.docx)."""
-
         word = messagebox.askyesno("Store data?", "Store data in '.docx'-file?")
         if word:
+            # Name Document
+            doc_name = str(self.city.replace(' ', '_')) + str(self.dtfile) + ".docx"
+
+            # Create, write and save Document
             doc = Document()
             doc.add_paragraph(text=self.data)
-            doc.save('placeholder.docx')
+            doc.save(doc_name)
 
     def date_time(self):
-        dtnow = datetime.datetime.now()
-        dt = dtnow.strftime('%Y/%m/%d_%H:%M:%S')
-        print(dt)
+        """Store current date & time."""
+        self.dtnow = datetime.datetime.now()
+        self.dtfile = self.dtnow.strftime('%Y%m%d%H%M%S')
+        self.dt = self.dtnow.strftime('%Y/%m/%d_%H:%M:%S')
 
 
 root = tk.Tk()
-root.geometry("500x400")
+root.title("Weather-Checker")
+root.geometry("250x300")
 weather = Weather(root)
 root.mainloop()
