@@ -1,5 +1,5 @@
 ### WEATHER ###
-"""V0.6.3: Store Data -> datetime"""
+"""V1.0.0: Weather-Checker"""
 
 
 import tkinter as tk
@@ -54,8 +54,9 @@ class Weather:
 
         self.city = self.location.get()
 
+        # "KEY ERROR: 'main'"
         while len(self.city) < 3:
-            # If the variable stored in 'city' contains less than 3 characters ('no','hi'), results in "KEY ERROR: 'main'"
+            '''If the variable stored in 'city' contains less than 3 characters ('no','hi'), results in "ERROR".'''
             self.city = " " + self.city
 
         # Complete URL
@@ -93,6 +94,7 @@ class Weather:
             # Translate "current_speed" from m/s to km/h
             kmh_speed = current_speed * 3.6
 
+            # Improve readability of data
             title = str(self.city.title() + "\n" + self.dt)
             txt = str("\n Temperature (in Celsius unit) = " +
                       str(current_temperature) +
